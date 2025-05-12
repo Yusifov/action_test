@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
+      has_changes: ${{ steps.set-matrix.outputs.has_changes }}
     steps:
       - uses: actions/checkout@v4
       - name: Get changed files
@@ -43,31 +44,31 @@ jobs:
             done
           done
 
-          # Eğer hiç değişiklik yoksa tüm bileşenleri build et (isteğe bağlı)
-          # if [ ${#changed_components[@]} -eq 0 ]; then
-          #   echo "No component-specific changes detected, building all components"
-          #   for component in "${components[@]}"; do
-          #     changed_components+=("$component")
-          #   done
-          # fi
+          if [ ${#changed_components[@]} -eq 0 ]; then
+            echo "No component-specific changes detected, skipping all builds"
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "matrix={\"include\":[]}" >> $GITHUB_OUTPUT
+          else
+            # Matrix'i JSON formatında oluştur
+            matrix_json="{\"include\":["
+            first=true
+            for item in "${changed_components[@]}"; do
+              if [ "$first" = false ]; then
+                matrix_json+=","
+              fi
+              matrix_json+="$item"
+              first=false
+            done
+            matrix_json+="]}"
 
-          # Matrix'i JSON formatında oluştur
-          matrix_json="{\"include\":["
-          first=true
-          for item in "${changed_components[@]}"; do
-            if [ "$first" = false ]; then
-              matrix_json+=","
-            fi
-            matrix_json+="$item"
-            first=false
-          done
-          matrix_json+="]}"
-
-          echo "Generated matrix: $matrix_json"
-          echo "matrix=$matrix_json" >> $GITHUB_OUTPUT
+            echo "Generated matrix: $matrix_json"
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+            echo "matrix=$matrix_json" >> $GITHUB_OUTPUT
+          fi
 
   build-components:
     needs: detect-changes
+    if: needs.detect-changes.outputs.has_changes == 'true'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
