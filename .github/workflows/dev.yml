@@ -13,8 +13,15 @@ env:
   ts_classifier: 0
 
 jobs:
-  conntroller:
+  set-env:
     runs-on: ubuntu-latest
+    outputs:
+      airflow: ${{ steps.set-env.outputs.airflow }}
+      common: ${{ steps.set-env.outputs.common }}
+      mlflow: ${{ steps.set-env.outputs.mlflow }}
+      modeloperator: ${{ steps.set-env.outputs.modeloperator }}
+      streamlit_app: ${{ steps.set-env.outputs.streamlit_app }}
+      ts_classifier: ${{ steps.set-env.outputs.ts_classifier }}
     steps:
       - uses: actions/checkout@v4
 
@@ -22,73 +29,78 @@ jobs:
         id: changed-files
         uses: tj-actions/changed-files@v40
 
-      - name: List all changed files
-        id: init
+      - name: Set environment variables
+        id: set-env
         run: |
-          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
-              echo "$file was changed"
-              
-              if [[ $file == "airflow/"* ]]; then
-                  echo "airflow=1" >> $GITHUB_ENV
-              fi
+          echo "airflow=$([[ ${{ steps.changed-files.outputs.all_changed_files }} == *'airflow/'* ]] && echo 1 || echo 0)" >> $GITHUB_OUTPUT
+          echo "common=$([[ ${{ steps.changed-files.outputs.all_changed_files }} == *'common/'* ]] && echo 1 || echo 0)" >> $GITHUB_OUTPUT
+          echo "mlflow=$([[ ${{ steps.changed-files.outputs.all_changed_files }} == *'mlflow/'* ]] && echo 1 || echo 0)" >> $GITHUB_OUTPUT
+          echo "modeloperator=$([[ ${{ steps.changed-files.outputs.all_changed_files }} == *'modeloperator/'* ]] && echo 1 || echo 0)" >> $GITHUB_OUTPUT
+          echo "streamlit_app=$([[ ${{ steps.changed-files.outputs.all_changed_files }} == *'streamlit_app/'* ]] && echo 1 || echo 0)" >> $GITHUB_OUTPUT
+          echo "ts_classifier=$([[ ${{ steps.changed-files.outputs.all_changed_files }} == *'ts_classifier/'* ]] && echo 1 || echo 0)" >> $GITHUB_OUTPUT
 
-              if [[ $file == "common/"* ]]; then
-                  echo "common=1" >> $GITHUB_ENV
-              fi
-
-              if [[ $file == "mlflow/"* ]]; then
-                  echo "mlflow=1" >> $GITHUB_ENV
-              fi
-
-              if [[ $file == "modeloperator/"* ]]; then
-                  echo "modeloperator=1" >> $GITHUB_ENV
-              fi
-
-              if [[ $file == "streamlit_app/"* ]]; then
-                  echo "streamlit_app=1" >> $GITHUB_ENV
-              fi
-
-              if [[ $file == "ts_classifier/"* ]]; then
-                  echo "ts_classifier=1" >> $GITHUB_ENV
-              fi
-          done
-
-      - name: Print environment variables
-        run: |
-          echo "Airflow: ${{ env.airflow }}"
-          echo "Common: ${{ env.common }}"
-          echo "MLflow: ${{ env.mlflow }}"
-          echo "ModelOperator: ${{ env.modeloperator }}"
-          echo "Streamlit App: ${{ env.streamlit_app }}"
-          echo "TS Classifier: ${{ env.ts_classifier }}"
-
+  airflow:
+    needs: set-env
+    if: needs.set-env.outputs.airflow == '1'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
       - name: Print Airflow version
-        if: env.airflow == '1'
         run: |
           echo "Airflow version:"
           cat airflow/version.txt
+
+  common:
+    needs: set-env
+    if: needs.set-env.outputs.common == '1'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
       - name: Print Common version
-        if: env.common == '1'
         run: |
           echo "Common version:"
           cat common/version.txt
+
+  mlflow:
+    needs: set-env
+    if: needs.set-env.outputs.mlflow == '1'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
       - name: Print Mlflow version
-        if: env.mlflow == '1'
         run: |
           echo "Mlflow version:"
           cat mlflow/version.txt
+
+  modeloperator:
+    needs: set-env
+    if: needs.set-env.outputs.modeloperator == '1'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
       - name: Print ModelOperator version
-        if: env.modeloperator == '1'
         run: |
           echo "ModelOperator version:"
           cat modeloperator/version.txt
+
+  streamlit_app:
+    needs: set-env
+    if: needs.set-env.outputs.streamlit_app == '1'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
       - name: Print Streamlit_app version
-        if: env.streamlit_app == '1'
         run: |
           echo "Streamlit_app version:"
           cat streamlit_app/version.txt
+
+  ts_classifier:
+    needs: set-env
+    if: needs.set-env.outputs.ts_classifier == '1'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
       - name: Print Ts_classifier version
-        if: env.ts_classifier == '1'
         run: |
           echo "Ts_classifier version:"
           cat ts_classifier/version.txt
