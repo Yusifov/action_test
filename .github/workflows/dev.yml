@@ -29,16 +29,36 @@ jobs:
         id: changed-files
         uses: tj-actions/changed-files@v40
 
-      - name: Set environment variables
-        id: set-env
+      - name: List all changed files
+        id: init
         run: |
-          echo "airflow=$([[ ${{ steps.changed-files.outputs.all_changed_files }} == *'airflow/'* ]] && echo 1 || echo 0)" >> $GITHUB_OUTPUT
-          echo "common=$([[ ${{ steps.changed-files.outputs.all_changed_files }} == *'common/'* ]] && echo 1 || echo 0)" >> $GITHUB_OUTPUT
-          echo "mlflow=$([[ ${{ steps.changed-files.outputs.all_changed_files }} == *'mlflow/'* ]] && echo 1 || echo 0)" >> $GITHUB_OUTPUT
-          echo "modeloperator=$([[ ${{ steps.changed-files.outputs.all_changed_files }} == *'modeloperator/'* ]] && echo 1 || echo 0)" >> $GITHUB_OUTPUT
-          echo "streamlit_app=$([[ ${{ steps.changed-files.outputs.all_changed_files }} == *'streamlit_app/'* ]] && echo 1 || echo 0)" >> $GITHUB_OUTPUT
-          echo "ts_classifier=$([[ ${{ steps.changed-files.outputs.all_changed_files }} == *'ts_classifier/'* ]] && echo 1 || echo 0)" >> $GITHUB_OUTPUT
+          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
+              echo "$file was changed"
+              
+              if [[ $file == "airflow/"* ]]; then
+                  echo "airflow=1" >> $GITHUB_ENV
+              fi
 
+              if [[ $file == "common/"* ]]; then
+                  echo "common=1" >> $GITHUB_ENV
+              fi
+
+              if [[ $file == "mlflow/"* ]]; then
+                  echo "mlflow=1" >> $GITHUB_ENV
+              fi
+
+              if [[ $file == "modeloperator/"* ]]; then
+                  echo "modeloperator=1" >> $GITHUB_ENV
+              fi
+
+              if [[ $file == "streamlit_app/"* ]]; then
+                  echo "streamlit_app=1" >> $GITHUB_ENV
+              fi
+
+              if [[ $file == "ts_classifier/"* ]]; then
+                  echo "ts_classifier=1" >> $GITHUB_ENV
+              fi
+          done
   airflow:
     needs: set-env
     if: needs.set-env.outputs.airflow == '1'
