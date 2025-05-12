@@ -149,29 +149,31 @@ jobs:
         run: |
           MATRIX='[]'
 
-          if [[ ${{ steps.changed-files.outputs.all_changed_files }} == *"mlflow/"* ]]; then
-            MATRIX=$(echo $MATRIX | jq '. += [{"name": "MlFlow", "dockerfile": "./mlflow/Dockerfile", "image": "${{ github.repository }}/mlflow", "tag": "ghcr.io/galaksiyait/timereactor/mlflow:v1.0.0-RC1, ghcr.io/galaksiyait/timereactor/mlflow:latest"}]')
-          fi
+          for file in modeloperator/version.txt streamlit_app/version.txt; do
+            if [[ $file == *"mlflow/"* ]]; then
+              MATRIX=$(echo $MATRIX | jq '. += [{"name": "MlFlow", "dockerfile": "./mlflow/Dockerfile", "image": "Yusifov/action_test/mlflow", "tag": "ghcr.io/galaksiyait/timereactor/mlflow:v1.0.0-RC1, ghcr.io/galaksiyait/timereactor/mlflow:latest"}]')
+            fi
 
-          if [[ ${{ steps.changed-files.outputs.all_changed_files }} == *"modeloperator/"* ]]; then
-            MATRIX=$(echo $MATRIX | jq '. += [{"name": "ModelOperator", "dockerfile": "./modeloperator/Dockerfile", "image": "${{ github.repository }}/training-api", "tag": "ghcr.io/galaksiyait/timereactor/training-api:v1.0.1-RC1, ghcr.io/galaksiyait/timereactor/training-api:latest"}]')
-          fi
+            if [[ $file == *"modeloperator/"* ]]; then
+              MATRIX=$(echo $MATRIX | jq '. += [{"name": "ModelOperator", "dockerfile": "./modeloperator/Dockerfile", "image": "Yusifov/action_test/training-api", "tag": "ghcr.io/galaksiyait/timereactor/training-api:v1.0.1-RC1, ghcr.io/galaksiyait/timereactor/training-api:latest"}]')
+            fi
 
-          if [[ ${{ steps.changed-files.outputs.all_changed_files }} == *"ts_classifier/"* ]]; then
-            MATRIX=$(echo $MATRIX | jq '. += [{"name": "TSClassifier", "dockerfile": "./ts_classifier/Dockerfile", "image": "${{ github.repository }}/ts-classifier", "tag": "ghcr.io/galaksiyait/timereactor/ts-classifier:v1.0.0-RC2, ghcr.io/galaksiyait/timereactor/ts-classifier:latest"}]')
-          fi
+            if [[ $file == *"ts_classifier/"* ]]; then
+              MATRIX=$(echo $MATRIX | jq '. += [{"name": "TSClassifier", "dockerfile": "./ts_classifier/Dockerfile", "image": "Yusifov/action_test/ts-classifier", "tag": "ghcr.io/galaksiyait/timereactor/ts-classifier:v1.0.0-RC2, ghcr.io/galaksiyait/timereactor/ts-classifier:latest"}]')
+            fi
 
-          if [[ ${{ steps.changed-files.outputs.all_changed_files }} == *"streamlit_app/"* ]]; then
-            MATRIX=$(echo $MATRIX | jq '. += [{"name": "StreamlitApp", "dockerfile": "./streamlit_app/Dockerfile", "image": "${{ github.repository }}/app", "tag": "ghcr.io/galaksiyait/timereactor/app:v1.0.0-RC8, ghcr.io/galaksiyait/timereactor/app:latest"}]')
-          fi
+            if [[ $file == *"streamlit_app/"* ]]; then
+              MATRIX=$(echo $MATRIX | jq '. += [{"name": "StreamlitApp", "dockerfile": "./streamlit_app/Dockerfile", "image": "Yusifov/action_test/app", "tag": "ghcr.io/galaksiyait/timereactor/app:v1.0.0-RC8, ghcr.io/galaksiyait/timereactor/app:latest"}]')
+            fi
 
-          if [[ ${{ steps.changed-files.outputs.all_changed_files }} == *"airflow/"* ]]; then
-            MATRIX=$(echo $MATRIX | jq '. += [{"name": "Airflow", "dockerfile": "./airflow/Dockerfile", "image": "${{ github.repository }}/airflow", "tag": "ghcr.io/galaksiyait/timereactor/airflow:v1.0.1-RC1, ghcr.io/galaksiyait/timereactor/airflow:latest"}]')
-          fi
+            if [[ $file == *"airflow/"* ]]; then
+              MATRIX=$(echo $MATRIX | jq '. += [{"name": "Airflow", "dockerfile": "./airflow/Dockerfile", "image": "Yusifov/action_test/airflow", "tag": "ghcr.io/galaksiyait/timereactor/airflow:v1.0.1-RC1, ghcr.io/galaksiyait/timereactor/airflow:latest"}]')
+            fi
 
-          if [[ ${{ steps.changed-files.outputs.all_changed_files }} == *"common/"* ]]; then
-            MATRIX=$(echo $MATRIX | jq '. += [{"name": "Common", "dockerfile": "./common/mlflow_custom_model/Dockerfile", "image": "${{ github.repository }}/pypiserver", "tag": "ghcr.io/galaksiyait/timereactor/pypiserver:v1.0.0-RC1, ghcr.io/galaksiyait/timereactor/pypiserver:latest"}]')
-          fi
+            if [[ $file == *"common/"* ]]; then
+              MATRIX=$(echo $MATRIX | jq '. += [{"name": "Common", "dockerfile": "./common/mlflow_custom_model/Dockerfile", "image": "Yusifov/action_test/pypiserver", "tag": "ghcr.io/galaksiyait/timereactor/pypiserver:v1.0.0-RC1, ghcr.io/galaksiyait/timereactor/pypiserver:latest"}]')
+            fi
+          done
 
           echo "matrix=$MATRIX" >> $GITHUB_OUTPUT
 
