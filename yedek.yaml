@@ -97,7 +97,16 @@ jobs:
           echo "image: ${{ env.image }}"
           echo "tag: ${{ env.tag }}"
 
-      
+  airflow:
+    needs: set-env
+    if: needs.set-env.outputs.airflow == '1'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Print Airflow version
+        run: |
+          echo "Airflow version:"
+          cat airflow/version.txt  
 
       
       # - name: Log in to the Container registry
