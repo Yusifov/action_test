@@ -1,198 +1,58 @@
-# name: CI/CD Dev Pipeline
-
-# on:
-#   push:
-#     branches: [ "main" ]
-
-# env:
-#   REGISTRY: ghcr.io
-#   dockerfile: ./default/Dockerfile
-#   image: ${{ github.repository }}/default
-#   tag: ghcr.io/galaksiyait/timereactor/default:v1.0.0-RC1, ghcr.io/galaksiyait/timereactor/default:latest
-#   mlflow: 0
-#   modeloperator: 0
-#   ts_classifier: 0
-#   streamlit_app: 0
-#   airflow: 0
-#   common: 0
-
-# jobs:
-#   set-env:
-#     runs-on: ubuntu-latest
-#     outputs:
-#       REGISTRY: ${{ steps.init.outputs.REGISTRY }}
-#       dockerfile: ${{ steps.init.outputs.dockerfile }}
-#       image: ${{ steps.init.outputs.image }}
-#       tag: ${{ steps.init.outputs.tag }}
-#       airflow: ${{ steps.init.outputs.airflow }}
-#       common: ${{ steps.init.outputs.common }}
-#       mlflow: ${{ steps.init.outputs.mlflow }}
-#       modeloperator: ${{ steps.init.outputs.modeloperator }}
-#       streamlit_app: ${{ steps.init.outputs.streamlit_app }}
-#       ts_classifier: ${{ steps.init.outputs.ts_classifier }}
-
-#     steps:
-#       - uses: actions/checkout@v4
-#       - name: Get changed files
-#         id: changed-files
-#         uses: tj-actions/changed-files@v40
-#       - name: List all changed files
-#         id: init
-#         run: |
-#           for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
-#               echo "$file was changed"
-              
-#               if [[ $file == "mlflow/"* ]]; then
-#                   echo "::set-output name=mlflow::1"
-#                   echo "::set-output name=dockerfile::./mlflow/Dockerfile"
-#                   echo "::set-output name=image::${{ github.repository }}/mlflow"
-#                   echo "::set-output name=tag::ghcr.io/galaksiyait/timereactor/mlflow:v1.0.0-RC1, ghcr.io/galaksiyait/timereactor/mlflow:latest"
-#               fi
-
-#               if [[ $file == "modeloperator/"* ]]; then
-#                   echo "::set-output name=modeloperator::1"
-#                   echo "::set-output name=dockerfile::./modeloperator/Dockerfile"
-#                   echo "::set-output name=image::${{ github.repository }}/training-api"
-#                   echo "::set-output name=tag::ghcr.io/galaksiyait/timereactor/training-api:v1.0.1-RC1, ghcr.io/galaksiyait/timereactor/training-api:latest"
-#               fi
-
-#               if [[ $file == "ts_classifier/"* ]]; then
-#                   echo "::set-output name=ts_classifier::1"
-#                   echo "::set-output name=dockerfile::./ts_classifier/Dockerfile"
-#                   echo "::set-output name=image::${{ github.repository }}/ts-classifier"
-#                   echo "::set-output name=tag::ghcr.io/galaksiyait/timereactor/ts-classifier:v1.0.0-RC2, ghcr.io/galaksiyait/timereactor/ts-classifier:latest"
-#               fi
-
-#               if [[ $file == "streamlit_app/"* ]]; then
-#                   echo "::set-output name=streamlit_app::1"
-#                   echo "::set-output name=dockerfile::./streamlit_app/Dockerfile"
-#                   echo "::set-output name=image::${{ github.repository }}/app"
-#                   echo "::set-output name=tag::ghcr.io/galaksiyait/timereactor/app:v1.0.0-RC8, ghcr.io/galaksiyait/timereactor/app:latest"
-#               fi
-
-#               if [[ $file == "airflow/"* ]]; then
-#                   echo "::set-output name=airflow::1"
-#                   echo "::set-output name=dockerfile::./airflow/Dockerfile"
-#                   echo "::set-output name=image::${{ github.repository }}/airflow"
-#                   echo "::set-output name=tag::ghcr.io/galaksiyait/timereactor/airflow:v1.0.1-RC1, ghcr.io/galaksiyait/timereactor/airflow:latest"
-#               fi
-
-#               if [[ $file == "common/"* ]]; then
-#                   echo "::set-output name=common::1"
-#                   echo "::set-output name=dockerfile::./common/mlflow_custom_model/Dockerfile"
-#                   echo "::set-output name=image::${{ github.repository }}/pypiserver"
-#                   echo "::set-output name=tag::ghcr.io/galaksiyait/timereactor/pypiserver:v1.0.0-RC1, ghcr.io/galaksiyait/timereactor/pypiserver:latest"
-#               fi
-#           done
-          
-#   building:
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Checkout repository
-#         uses: actions/checkout@v4
-#       - name: Print environment variables
-#         run: |
-#           echo "REGISTRY: ${{ env.REGISTRY }}"
-#           echo "dockerfile: ${{ env.dockerfile }}"
-#           echo "image: ${{ env.image }}"
-#           echo "tag: ${{ env.tag }}"
-
-      
-#       # - name: Log in to the Container registry
-#       #   uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
-#       #   with:
-#       #     registry: ${{ env.REGISTRY }}
-#       #     username: ${{ github.actor }}
-#       #     password: ${{ secrets.CR_PAT }}
-#       # - name: Extract metadata (tags, labels) for Docker
-#       #   id: meta
-#       #   uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
-#       #   with:
-#       #     images: ${{ steps.set-env.outputs.image }}
-#       # - name: Build and push Docker image
-#       #   id: push
-#       #   uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
-#       #   with:
-#       #     context: .
-#       #     file: ${{ steps.set-env.outputs.dockerfile }}
-#       #     push: true
-#       #     tags: ${{ steps.set-env.outputs.tag }}
-#       #     labels: ${{ steps.meta.outputs.labels }}
-
-
-
-# ----
-
 name: CI/CD Dev Pipeline
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ 'main' ]
 
 env:
   REGISTRY: ghcr.io
 
 jobs:
-  set-env:
-    runs-on: ubuntu-latest
-    outputs:
-      matrix: ${{ steps.set-matrix.outputs.matrix }}
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Get changed files
-        id: changed-files
-        uses: tj-actions/changed-files@v40
-
-      - name: Determine affected components
-        id: set-matrix
-        run: |
-          MATRIX='[]'
-
-          for file in modeloperator/version.txt streamlit_app/version.txt; do
-            if [[ $file == *"mlflow/"* ]]; then
-              MATRIX=$(echo $MATRIX | jq '. += [{"name": "MlFlow", "dockerfile": "./mlflow/Dockerfile", "image": "Yusifov/action_test/mlflow", "tag": "ghcr.io/galaksiyait/timereactor/mlflow:v1.0.0-RC1, ghcr.io/galaksiyait/timereactor/mlflow:latest"}]')
-            fi
-
-            if [[ $file == *"modeloperator/"* ]]; then
-              MATRIX=$(echo $MATRIX | jq '. += [{"name": "ModelOperator", "dockerfile": "./modeloperator/Dockerfile", "image": "Yusifov/action_test/training-api", "tag": "ghcr.io/galaksiyait/timereactor/training-api:v1.0.1-RC1, ghcr.io/galaksiyait/timereactor/training-api:latest"}]')
-            fi
-
-            if [[ $file == *"ts_classifier/"* ]]; then
-              MATRIX=$(echo $MATRIX | jq '. += [{"name": "TSClassifier", "dockerfile": "./ts_classifier/Dockerfile", "image": "Yusifov/action_test/ts-classifier", "tag": "ghcr.io/galaksiyait/timereactor/ts-classifier:v1.0.0-RC2, ghcr.io/galaksiyait/timereactor/ts-classifier:latest"}]')
-            fi
-
-            if [[ $file == *"streamlit_app/"* ]]; then
-              MATRIX=$(echo $MATRIX | jq '. += [{"name": "StreamlitApp", "dockerfile": "./streamlit_app/Dockerfile", "image": "Yusifov/action_test/app", "tag": "ghcr.io/galaksiyait/timereactor/app:v1.0.0-RC8, ghcr.io/galaksiyait/timereactor/app:latest"}]')
-            fi
-
-            if [[ $file == *"airflow/"* ]]; then
-              MATRIX=$(echo $MATRIX | jq '. += [{"name": "Airflow", "dockerfile": "./airflow/Dockerfile", "image": "Yusifov/action_test/airflow", "tag": "ghcr.io/galaksiyait/timereactor/airflow:v1.0.1-RC1, ghcr.io/galaksiyait/timereactor/airflow:latest"}]')
-            fi
-
-            if [[ $file == *"common/"* ]]; then
-              MATRIX=$(echo $MATRIX | jq '. += [{"name": "Common", "dockerfile": "./common/mlflow_custom_model/Dockerfile", "image": "Yusifov/action_test/pypiserver", "tag": "ghcr.io/galaksiyait/timereactor/pypiserver:v1.0.0-RC1, ghcr.io/galaksiyait/timereactor/pypiserver:latest"}]')
-            fi
-          done
-
-          echo "$MATRIX" | jq . > /dev/null 2>&1
-          if [ $? -eq 0 ]; then
-            echo "matrix=$(echo $MATRIX | jq -c .)" >> $GITHUB_OUTPUT
-          else
-            echo "Error: Invalid JSON format in MATRIX"
-            exit 1
-          fi
-
-  building:
-    needs: set-env
+  time-reactor:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      matrix: ${{ fromJson(needs.set-env.outputs.matrix) }}
+      matrix:
+        include:
+          - name: MlFlow Build
+            dockerfile: ./mlflow/Dockerfile
+            image: ${{ github.repository }}/mlflow
+            tag:  ghcr.io/galaksiyait/timereactor/mlflow:v1.0.0-RC1, ghcr.io/galaksiyait/timereactor/mlflow:latest
+            condition: ${{ contains(github.event.head_commit.message, '[build mlflow]') }}
+          - name: Training Api Build
+            dockerfile: ./modeloperator/Dockerfile
+            image: ${{ github.repository }}/training-api
+            tag: ghcr.io/galaksiyait/timereactor/training-api:v1.0.0-RC5, ghcr.io/galaksiyait/timereactor/training-api:latest
+            condition: ${{ contains(github.event.head_commit.message, '[build model]') }}
+          - name: Streamlit Application Build
+            dockerfile: ./streamlit_app/Dockerfile
+            image: ${{ github.repository }}/app
+            tag: ghcr.io/galaksiyait/timereactor/app:v1.0.0-RC5, ghcr.io/galaksiyait/timereactor/app:latest
+            condition: ${{ contains(github.event.head_commit.message, '[build streamlit]') }}
+          - name: Time Reactor Api Build
+            dockerfile: ./timereactorapi/Dockerfile
+            image: ${{ github.repository }}/timereactor-api
+            tag: ghcr.io/galaksiyait/timereactor/timereactor-api:v1.0.0-RC6, ghcr.io/galaksiyait/timereactor/timereactor-api:latest
+            condition: ${{ contains(github.event.head_commit.message, '[build api]') }}
+          - name: Model Registry Build
+            dockerfile: ./mlflow_model_registry/Dockerfile
+            image: ${{ github.repository }}/model-registry
+            tag: ghcr.io/galaksiyait/timereactor/model-registry:v1.0.0-RC2, ghcr.io/galaksiyait/timereactor/model-registry:latest
+            condition: ${{ contains(github.event.head_commit.message, '[build mlflow_model]') }}
+          - name: Airflow Build
+            dockerfile: ./airflow/Dockerfile
+            image: ${{ github.repository }}/airflow
+            tag: ghcr.io/galaksiyait/timereactor/airflow:v1.0.0-RC1, ghcr.io/galaksiyait/timereactor/airflow:latest
+            condition: ${{ contains(github.event.head_commit.message, '[build airflow]') }}
+    permissions:
+      contents: write
+      packages: write
+      attestations: write
+      id-token: write
     steps:
       - name: Checkout repository
+        if: matrix.condition == 'true' || !matrix.condition
         uses: actions/checkout@v4
-
       - name: Print environment variables
         run: |
           echo "Building component: ${{ matrix.name }}"
