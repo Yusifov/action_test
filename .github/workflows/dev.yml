@@ -16,19 +16,18 @@ jobs:
   set-env:
     runs-on: ubuntu-latest
     outputs:
-      airflow: ${{ steps.set-env.outputs.airflow }}
-      common: ${{ steps.set-env.outputs.common }}
-      mlflow: ${{ steps.set-env.outputs.mlflow }}
-      modeloperator: ${{ steps.set-env.outputs.modeloperator }}
-      streamlit_app: ${{ steps.set-env.outputs.streamlit_app }}
-      ts_classifier: ${{ steps.set-env.outputs.ts_classifier }}
+      airflow: ${{ steps.init.outputs.airflow }}
+      common: ${{ steps.init.outputs.common }}
+      mlflow: ${{ steps.init.outputs.mlflow }}
+      modeloperator: ${{ steps.init.outputs.modeloperator }}
+      streamlit_app: ${{ steps.init.outputs.streamlit_app }}
+      ts_classifier: ${{ steps.init.outputs.ts_classifier }}
+
     steps:
       - uses: actions/checkout@v4
-
       - name: Get changed files
         id: changed-files
         uses: tj-actions/changed-files@v40
-
       - name: List all changed files
         id: init
         run: |
@@ -36,29 +35,30 @@ jobs:
               echo "$file was changed"
               
               if [[ $file == "airflow/"* ]]; then
-                  echo "airflow=1" >> $GITHUB_ENV
+                  echo "::set-output name=airflow::1"
               fi
 
               if [[ $file == "common/"* ]]; then
-                  echo "common=1" >> $GITHUB_ENV
+                  echo "::set-output name=common::1"
               fi
 
               if [[ $file == "mlflow/"* ]]; then
-                  echo "mlflow=1" >> $GITHUB_ENV
+                  echo "::set-output name=mlflow::1"
               fi
 
               if [[ $file == "modeloperator/"* ]]; then
-                  echo "modeloperator=1" >> $GITHUB_ENV
+                  echo "::set-output name=modeloperator::1"
               fi
 
               if [[ $file == "streamlit_app/"* ]]; then
-                  echo "streamlit_app=1" >> $GITHUB_ENV
+                  echo "::set-output name=streamlit_app::1"
               fi
 
               if [[ $file == "ts_classifier/"* ]]; then
-                  echo "ts_classifier=1" >> $GITHUB_ENV
+                  echo "::set-output name=ts_classifier::1"
               fi
           done
+          
   airflow:
     needs: set-env
     if: needs.set-env.outputs.airflow == '1'
