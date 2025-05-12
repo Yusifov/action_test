@@ -61,3 +61,34 @@ jobs:
           echo "ModelOperator: ${{ env.modeloperator }}"
           echo "Streamlit App: ${{ env.streamlit_app }}"
           echo "TS Classifier: ${{ env.ts_classifier }}"
+
+      - name: Print Airflow version
+        if: env.airflow == '1'
+        run: |
+          echo "Airflow version:"
+          cat airflow/version.txt
+      - name: Print Common version
+        if: env.common == '1'
+        run: |
+          echo "Common version:"
+          cat common/version.txt
+      - name: Print Mlflow version
+        if: env.mlflow == '1'
+        run: |
+          echo "Mlflow version:"
+          cat mlflow/version.txt
+      - name: Print ModelOperator version
+        if: env.modeloperator == '1'
+        run: |
+          echo "ModelOperator version:"
+          cat modeloperator/version.txt
+      - name: Print Streamlit_app version
+        if: env.streamlit_app == '1'
+        run: |
+          echo "Streamlit_app version:"
+          cat streamlit_app/version.txt
+      - name: Print Ts_classifier version
+        if: env.ts_classifier == '1'
+        run: |
+          echo "Ts_classifier version:"
+          cat ts_classifier/version.txt
