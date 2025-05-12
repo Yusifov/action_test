@@ -23,11 +23,11 @@ jobs:
           # Tüm bileşenler için matrix elemanlarını tanımla
           declare -A components=(
             ["mlflow"]='{"name":"MlFlow Build","dockerfile":"./mlflow/Dockerfile","image":"${{ github.repository }}/mlflow","tag":"ghcr.io/galaksiyait/timereactor/mlflow:v1.0.0-RC1, ghcr.io/galaksiyait/timereactor/mlflow:latest"}'
-            ["modeloperator"]='{"name":"Training Api Build","dockerfile":"./modeloperator/Dockerfile","image":"${{ github.repository }}/training-api","tag":"ghcr.io/galaksiyait/timereactor/training-api:v1.0.0-RC5, ghcr.io/galaksiyait/timereactor/training-api:latest"}'
-            ["streamlit_app"]='{"name":"Streamlit Application Build","dockerfile":"./streamlit_app/Dockerfile","image":"${{ github.repository }}/app","tag":"ghcr.io/galaksiyait/timereactor/app:v1.0.0-RC5, ghcr.io/galaksiyait/timereactor/app:latest"}'
-            ["timereactorapi"]='{"name":"Time Reactor Api Build","dockerfile":"./timereactorapi/Dockerfile","image":"${{ github.repository }}/timereactor-api","tag":"ghcr.io/galaksiyait/timereactor/timereactor-api:v1.0.0-RC6, ghcr.io/galaksiyait/timereactor/timereactor-api:latest"}'
-            ["mlflow_model_registry"]='{"name":"Model Registry Build","dockerfile":"./mlflow_model_registry/Dockerfile","image":"${{ github.repository }}/model-registry","tag":"ghcr.io/galaksiyait/timereactor/model-registry:v1.0.0-RC2, ghcr.io/galaksiyait/timereactor/model-registry:latest"}'
-            ["airflow"]='{"name":"Airflow Build","dockerfile":"./airflow/Dockerfile","image":"${{ github.repository }}/airflow","tag":"ghcr.io/galaksiyait/timereactor/airflow:v1.0.0-RC1, ghcr.io/galaksiyait/timereactor/airflow:latest"}'
+            ["modeloperator"]='{"name":"Training Api Build","dockerfile":"./modeloperator/Dockerfile","image":"${{ github.repository }}/training-api","tag":"ghcr.io/galaksiyait/timereactor/training-api:v1.0.1-RC1, ghcr.io/galaksiyait/timereactor/training-api:latest"}'
+            ["ts_classifier"]='{"name":"Time Reactor Api Build","dockerfile":"./ts_classifier/Dockerfile","image":"${{ github.repository }}/ts-classifier","tag":"ghcr.io/galaksiyait/timereactor/ts-classifier:v1.0.0-RC2, ghcr.io/galaksiyait/timereactor/ts-classifier:latest"}'
+            ["streamlit_app"]='{"name":"Streamlit Application Build","dockerfile":"./streamlit_app/Dockerfile","image":"${{ github.repository }}/app","tag":"ghcr.io/galaksiyait/timereactor/app:v1.0.0-RC8, ghcr.io/galaksiyait/timereactor/app:latest"}'
+            ["airflow"]='{"name":"Airflow Build","dockerfile":"./airflow/Dockerfile","image":"${{ github.repository }}/airflow","tag":"ghcr.io/galaksiyait/timereactor/airflow:v1.0.1-RC1, ghcr.io/galaksiyait/timereactor/airflow:latest"}'
+            ["common"]='{"name":"PypiServer Build","dockerfile":"./common/mlflow_custom_model/Dockerfile","image":"${{ github.repository }}/pypiserver","tag":"ghcr.io/galaksiyait/timereactor/pypiserver:v1.0.0-RC1, ghcr.io/galaksiyait/timereactor/pypiserver:latest"}'
           )
 
           # Değişen bileşenleri tespit et
@@ -44,12 +44,12 @@ jobs:
           done
 
           # Eğer hiç değişiklik yoksa tüm bileşenleri build et (isteğe bağlı)
-          if [ ${#changed_components[@]} -eq 0 ]; then
-            echo "No component-specific changes detected, building all components"
-            for component in "${components[@]}"; do
-              changed_components+=("$component")
-            done
-          fi
+          # if [ ${#changed_components[@]} -eq 0 ]; then
+          #   echo "No component-specific changes detected, building all components"
+          #   for component in "${components[@]}"; do
+          #     changed_components+=("$component")
+          #   done
+          # fi
 
           # Matrix'i JSON formatında oluştur
           matrix_json="{\"include\":["
