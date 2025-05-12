@@ -5,28 +5,23 @@ on:
     branches: [ "main" ]
 
 env:
- airflow: test
- common: 0
- mlflow: 0
- modeloperator: 0
- streamlit_app: 0
- ts_classifier: 0
+  airflow: test
+  common: 0
+  mlflow: 0
+  modeloperator: 0
+  streamlit_app: 0
+  ts_classifier: 0
 
 jobs:
   conntroller:
     runs-on: ubuntu-latest
-    outputs:
-      airflow: ${{ steps.init.outputs.airflow }}
-      common: ${{ steps.init.outputs.common }}
-      mlflow: ${{ steps.init.outputs.mlflow }}
-      modeloperator: ${{ steps.init.outputs.modeloperator }}
-      streamlit_app: ${{ steps.init.outputs.streamlit_app }}
-      ts_classifier:  ${{ steps.init.outputs.ts_classifier }}
     steps:
       - uses: actions/checkout@v4
+
       - name: Get changed files
         id: changed-files
         uses: tj-actions/changed-files@v40
+
       - name: List all changed files
         id: init
         run: |
@@ -34,35 +29,35 @@ jobs:
               echo "$file was changed"
               
               if [[ $file == "airflow/"* ]]; then
-                  echo "::set-output name=airflow::1"
+                  echo "airflow=1" >> $GITHUB_ENV
               fi
 
               if [[ $file == "common/"* ]]; then
-                  echo "::set-output name=common::1"
+                  echo "common=1" >> $GITHUB_ENV
               fi
 
               if [[ $file == "mlflow/"* ]]; then
-                  echo "::set-output name=mlflow::1"
+                  echo "mlflow=1" >> $GITHUB_ENV
               fi
 
               if [[ $file == "modeloperator/"* ]]; then
-                  echo "::set-output name=modeloperator::1"
+                  echo "modeloperator=1" >> $GITHUB_ENV
               fi
 
               if [[ $file == "streamlit_app/"* ]]; then
-              echo "::set-output name=streamlit_app::1"
+                  echo "streamlit_app=1" >> $GITHUB_ENV
               fi
 
               if [[ $file == "ts_classifier/"* ]]; then
-              echo "::set-output name=ts_classifier::1"
+                  echo "ts_classifier=1" >> $GITHUB_ENV
               fi
           done
 
       - name: Print environment variables
         run: |
-          echo "Airflow: ${{ needs.conntroller.outputs.airflow }}"
-          echo "Common: ${{ needs.conntroller.outputs.common }}"
-          echo "MLflow: ${{ needs.conntroller.outputs.mlflow }}"
-          echo "ModelOperator: ${{ needs.conntroller.outputs.modeloperator }}"
-          echo "Streamlit App: ${{ needs.conntroller.outputs.streamlit_app }}"
-          echo "TS Classifier: ${{ needs.conntroller.outputs.ts_classifier }}"
+          echo "Airflow: ${{ env.airflow }}"
+          echo "Common: ${{ env.common }}"
+          echo "MLflow: ${{ env.mlflow }}"
+          echo "ModelOperator: ${{ env.modeloperator }}"
+          echo "Streamlit App: ${{ env.streamlit_app }}"
+          echo "TS Classifier: ${{ env.ts_classifier }}"
