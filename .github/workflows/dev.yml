@@ -5,7 +5,7 @@ on:
     branches: [ "main" ]
 
 env:
-  airflow: test
+  airflow: 0
   common: 0
   mlflow: 0
   modeloperator: 0
